@@ -1,15 +1,21 @@
+// import { useQuery } from "@apollo/client";
+import { useSubscription } from "@apollo/client";
 import { PlayArrow, Save } from "@mui/icons-material";
 import { Card, CardActions, CardContent, CardMedia, CircularProgress, IconButton, Typography } from "@mui/material";
 import { makeStyles } from "tss-react/mui";
+// import { GET_SONGS } from '../graphql/queries';
+import { GET_SONGS } from '../graphql/subscription';
 
 function SongList() {
-    const loading = false;
-    
-    const song = {
-        title: 'Starry Eyed',
-        artist: 'Jane & The Boy',
-        thumbnail: 'https://via.placeholder.com/500'
-    }
+    // const { data, loading, error } = useQuery(GET_SONGS);
+    const { data, loading, error } = useSubscription(GET_SONGS);
+
+    // const loading = false;
+    // const song = {
+    //     title: 'Starry Eyed',
+    //     artist: 'Jane & The Boy',
+    //     thumbnail: 'https://via.placeholder.com/500'
+    // }
     
     if (loading) {
         return (
@@ -23,11 +29,16 @@ function SongList() {
             </div> 
         )
     }
+
+    if (error) return <p>Error : {error.message}</p>;
     
     return (
         <>
-            {Array.from({ length: 10 }, () => song).map((song, index) => (
+            {/* {Array.from({ length: 10 }, () => song).map((song, index) => (
                 <Song key={index} song={song} />
+            ))} */}
+            {data.songs.map(song => (
+                <Song key={song.id} song={song} />
             ))}
         </>
     )    
