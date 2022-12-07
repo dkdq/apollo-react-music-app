@@ -1,22 +1,28 @@
+import { useMutation } from "@apollo/client";
 import { Delete } from "@mui/icons-material";
 import { Avatar, IconButton, Typography, useMediaQuery } from "@mui/material";
 import { makeStyles } from "tss-react/mui";
+import { ADD_OR_REMOVE_FROM_QUEUE } from "../graphql/mutation";
 
-function QueuedSongList() {
+function QueuedSongList({ queue }) {
+    console.log({queue})
     const greaterThanMd = useMediaQuery(theme => theme.breakpoints.up('md'));
     
-    const song = {
-        title: 'Starry Eyed',
-        artist: 'Jane & The Boy',
-        thumbnail: 'https://via.placeholder.com/500'
-    }
+    // const song = {
+    //     title: 'Starry Eyed',
+    //     artist: 'Jane & The Boy',
+    //     thumbnail: 'https://via.placeholder.com/500'
+    // }
 
     return greaterThanMd && (
         <div style={{ margin: '10px 0' }}>
             <Typography variant="button" color='textSecondary'>
-                QUEUE(5)
+                {/* QUEUE(5) */}
+                QUEUE({queue.length})
             </Typography>
-            {Array.from({ length: 5}, () => song).map((song, index) => (
+            {/* {Array.from({ length: 5}, () => song).map((song, index) => (
+                <QueuedSong key={index} song={song} /> */}
+            {queue.map((song, index) => (
                 <QueuedSong key={index} song={song} />
             ))}
         </div> 
@@ -49,6 +55,17 @@ const useStyles = makeStyles()({
 function QueuedSong({ song }) {
     const { classes } = useStyles();
     const { thumbnail, artist, title } = song;
+    const [addOrRemoveFromQueue] = useMutation(ADD_OR_REMOVE_FROM_QUEUE, {
+        onCompleted: data => {
+            localStorage.setItem('queue', JSON.stringify(data.addOrRemoveFromQueue))
+        }
+    });
+
+    function handleAddOrRemoveFromQueue() {
+        addOrRemoveFromQueue({
+            variables: { input: { ...song, __typename: 'Song' } }
+        })
+    }
 
     return (
         <div className={classes.container}>
@@ -61,8 +78,8 @@ function QueuedSong({ song }) {
                     { artist }
                 </Typography>
             </div>
-            <IconButton>
-                <Delete color="error"/>
+            <IconButton color="error" onClick={handleAddOrRemoveFromQueue}>
+                <Delete />
             </IconButton>
         </div>
     )
