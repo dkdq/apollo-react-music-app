@@ -12,7 +12,7 @@ export const SongContext = React.createContext({
         id: '634c1ca9-3558-49a4-a5ac-20e6c0c6c01f',
         title: 'Starry Eyed',
         artist: 'Jane & The Boy',
-        thumbnail: 'http://img.youtube.com/vi/bJISoKSkdfs/0.jpg',
+        thumbnail: 'https://img.youtube.com/vi/bJISoKSkdfs/0.jpg',
         url: 'https://www.youtube.com/watch?v=bJISoKSkdfs',
         duration: 186
     },
